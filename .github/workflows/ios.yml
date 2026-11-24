@@ -1,0 +1,79 @@
+name: Build iPhone App
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['README.md', 'docs/**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare project
+        run: |
+          set -euo pipefail
+          if ! command -v xcodegen >/dev/null; then brew install xcodegen; fi
+          python3 scripts/generate_assets.py
+          xcodegen generate
+          xcodebuild -version
+      - name: Test layout and export on iPhone simulator
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          DEVICE_ID=$(xcrun simctl list devices available -j | python3 -c 'import json,sys; d=json.load(sys.stdin); print(next(x["udid"] for k,v in d["devices"].items() if "iOS" in k for x in v if "iPhone" in x["name"]))')
+          echo "SIMULATOR_ID=$DEVICE_ID" >> "$GITHUB_ENV"
+          xcodebuild test -project Pintu.xcodeproj -scheme Pintu \
+            -destination "platform=iOS Simulator,id=$DEVICE_ID" \
+            -derivedDataPath build/Simulator -resultBundlePath build/TestResults.xcresult \
+            CODE_SIGNING_ALLOWED=NO | tee build/test.log
+      - name: Capture app preview
+        if: success()
+        run: |
+          set -euo pipefail
+          xcrun simctl boot "$SIMULATOR_ID" || true
+          xcrun simctl bootstatus "$SIMULATOR_ID" -b
+          xcrun simctl install "$SIMULATOR_ID" build/Simulator/Build/Products/Debug-iphonesimulator/Pintu.app
+          xcrun simctl launch "$SIMULATOR_ID" com.guangzhisu.pintu --demo
+          sleep 3
+          xcrun simctl io "$SIMULATOR_ID" screenshot build/Pintu-iPhone.png
+      - name: Build unsigned iPhone app
+        run: |
+          set -euo pipefail
+          xcodebuild build -project Pintu.xcodeproj -scheme Pintu -configuration Release \
+            -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath build/Device \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" | tee build/device-build.log
+          mkdir -p build/Package/Payload
+          ditto build/Device/Build/Products/Release-iphoneos/Pintu.app build/Package/Payload/Pintu.app
+          (cd build/Package && /usr/bin/zip -qry ../Pintu-unsigned.ipa Payload)
+          test -s build/Pintu-unsigned.ipa
+          echo '### iPhone ��װ��������' >> "$GITHUB_STEP_SUMMARY"
+          echo '�����·� Pintu-iPhone-unsigned����ѹ��ʹ�� Sideloadly �� AltStore ǩ����װ IPA��' >> "$GITHUB_STEP_SUMMARY"
+          echo 'ע�⣺δǩ�� IPA ����ֱ�ӵ����װ���ⲻ�� TestFlight / App Store ���а���' >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload iPhone IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pintu-iPhone-unsigned
+          path: build/Pintu-unsigned.ipa
+          retention-days: 30
+          if-no-files-found: error
+      - name: Upload preview and test logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pintu-preview-and-tests
+          path: |
+            build/Pintu-iPhone.png
+            build/*.log
+            build/TestResults.xcresult
+          retention-days: 14
