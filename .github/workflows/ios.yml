@@ -37,16 +37,6 @@ jobs:
             -destination "platform=iOS Simulator,id=$DEVICE_ID" \
             -derivedDataPath build/Simulator -resultBundlePath build/TestResults.xcresult \
             CODE_SIGNING_ALLOWED=NO | tee build/test.log
-      - name: Capture app preview
-        if: success()
-        run: |
-          set -euo pipefail
-          xcrun simctl boot "$SIMULATOR_ID" || true
-          xcrun simctl bootstatus "$SIMULATOR_ID" -b
-          xcrun simctl install "$SIMULATOR_ID" build/Simulator/Build/Products/Debug-iphonesimulator/Pintu.app
-          xcrun simctl launch "$SIMULATOR_ID" com.guangzhisu.pintu --demo
-          sleep 3
-          xcrun simctl io "$SIMULATOR_ID" screenshot build/Pintu-iPhone.png
       - name: Build unsigned iPhone app
         run: |
           set -euo pipefail
@@ -67,6 +57,20 @@ jobs:
           path: build/Pintu-unsigned.ipa
           retention-days: 30
           if-no-files-found: error
+      - name: Capture app preview
+        if: success()
+        continue-on-error: true
+        timeout-minutes: 2
+        run: |
+          set -euo pipefail
+          BOOTED_ID=$(xcrun simctl list devices booted -j | python3 -c 'import json,sys; d=json.load(sys.stdin); print(next((x["udid"] for v in d["devices"].values() for x in v if "iPhone" in x["name"]), ""))')
+          if [ -n "$BOOTED_ID" ]; then SIMULATOR_ID="$BOOTED_ID"; fi
+          xcrun simctl boot "$SIMULATOR_ID" || true
+          xcrun simctl bootstatus "$SIMULATOR_ID" -b
+          xcrun simctl install "$SIMULATOR_ID" build/Simulator/Build/Products/Debug-iphonesimulator/Pintu.app
+          xcrun simctl launch "$SIMULATOR_ID" com.guangzhisu.pintu --demo
+          sleep 3
+          xcrun simctl io "$SIMULATOR_ID" screenshot build/Pintu-iPhone.png
       - name: Upload preview and test logs
         if: always()
         uses: actions/upload-artifact@v4
