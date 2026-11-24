@@ -18,7 +18,7 @@ enum CanvasRatio: String, CaseIterable, Identifiable {
 }
 
 enum CollageMode: String, CaseIterable, Identifiable {
-    case templates = "ģ��", vertical = "����ͼ", horizontal = "����ƴ��"
+    case templates = "模板", vertical = "竖向长图", horizontal = "横向拼接"
     var id: String { rawValue }
 }
 
@@ -58,7 +58,7 @@ enum CollageGeometry {
 
     static func layouts(for count: Int) -> [CollageLayout] {
         guard (1...12).contains(count) else { return [] }
-        if count == 1 { return [CollageLayout(id: "single", name: "���Ż���", cells: rows([1]))] }
+        if count == 1 { return [CollageLayout(id: "single", name: "单张画布", cells: rows([1]))] }
         var result: [CollageLayout] = []
         func add(_ id: String, _ name: String, _ cells: [CGRect]) {
             // Deduplicate visually identical layouts.
@@ -74,24 +74,24 @@ enum CollageGeometry {
                 CGRect(x: $0.minX, y: 0.6 + $0.minY * 0.4, width: $0.width, height: $0.height * 0.4)
             }
             let hero = [CGRect(x: 0, y: 0, width: 1, height: 0.6)] + bottom
-            add("hero-top", "�ϴ���С", hero)
-            add("hero-left", "�����С", transpose(hero))
-            add("hero-bottom", "�·���ͼ", hero.map { CGRect(x: $0.minX, y: 1 - $0.maxY, width: $0.width, height: $0.height) })
-            add("hero-right", "�Ҳ���ͼ", transpose(hero).map { CGRect(x: 1 - $0.maxX, y: $0.minY, width: $0.width, height: $0.height) })
+            add("hero-top", "上大下小", hero)
+            add("hero-left", "左大右小", transpose(hero))
+            add("hero-bottom", "下方主图", hero.map { CGRect(x: $0.minX, y: 1 - $0.maxY, width: $0.width, height: $0.height) })
+            add("hero-right", "右侧主图", transpose(hero).map { CGRect(x: 1 - $0.maxX, y: $0.minY, width: $0.width, height: $0.height) })
         }
         for columns in 1...min(count, 4) {
             let counts = balancedCounts(count, columns: columns)
             let grid = rows(counts)
-            add("grid-\(columns)", columns == 1 ? "��������" : "\(columns) ������", grid)
-            add("columns-\(columns)", columns == 1 ? "��������" : "\(columns) ������", transpose(grid))
+            add("grid-\(columns)", columns == 1 ? "上下排列" : "\(columns) 列网格", grid)
+            add("columns-\(columns)", columns == 1 ? "左右排列" : "\(columns) 行网格", transpose(grid))
             if counts.count > 1 && counts.first != counts.last {
-                add("reverse-\(columns)", "��������", rows(Array(counts.reversed())))
+                add("reverse-\(columns)", "错落网格", rows(Array(counts.reversed())))
             }
         }
         if count >= 3 && count <= 6 {
             for split in 1..<count {
-                add("split-\(split)", "���·���", rows([split, count - split]))
-                add("split-t-\(split)", "���ҷ���", transpose(rows([split, count - split])))
+                add("split-\(split)", "上下分区", rows([split, count - split]))
+                add("split-t-\(split)", "左右分区", transpose(rows([split, count - split])))
             }
         }
         return result

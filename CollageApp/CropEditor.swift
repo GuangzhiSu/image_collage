@@ -35,26 +35,26 @@ struct CropEditor: View {
                         .gesture(dragGesture(size: size).simultaneously(with: magnifyGesture))
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }.padding(20).background(Color.pintuInk)
-                Label("�϶�����λ�ã�˫ָ����", systemImage: "hand.draw")
+                Label("拖动调整位置，双指缩放", systemImage: "hand.draw")
                     .font(.system(size: 14)).foregroundStyle(.secondary)
                 HStack(spacing: 14) {
                     Image(systemName: "minus.magnifyingglass")
-                    Slider(value: $transform.zoom, in: 1...4).accessibilityLabel("��Ƭ����")
+                    Slider(value: $transform.zoom, in: 1...4).accessibilityLabel("照片缩放")
                     Image(systemName: "plus.magnifyingglass")
                 }.padding(.horizontal, 28)
                 HStack(spacing: 40) {
-                    Button { turns = (turns + 1) % 4; refreshImage() } label: { Label("��ת", systemImage: "rotate.right") }
-                    Button { mirrored.toggle(); refreshImage() } label: { Label("����", systemImage: "arrow.left.and.right.righttriangle.left.righttriangle.right") }
+                    Button { turns = (turns + 1) % 4; refreshImage() } label: { Label("旋转", systemImage: "rotate.right") }
+                    Button { mirrored.toggle(); refreshImage() } label: { Label("镜像", systemImage: "arrow.left.and.right.righttriangle.left.righttriangle.right") }
                     Button {
                         turns = 0; mirrored = false; refreshImage()
-                    } label: { Label("����", systemImage: "arrow.counterclockwise") }
+                    } label: { Label("重置", systemImage: "arrow.counterclockwise") }
                 }.font(.system(size: 15)).padding(.bottom, 24)
             }
-            .navigationTitle("������Ƭ").navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("调整照片").navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button("ȡ��") { dismiss() } }
+                ToolbarItem(placement: .cancellationAction) { Button("取消") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("���") { onSave(transform, turns, mirrored); dismiss() }.fontWeight(.semibold)
+                    Button("完成") { onSave(transform, turns, mirrored); dismiss() }.fontWeight(.semibold)
                 }
             }
         }

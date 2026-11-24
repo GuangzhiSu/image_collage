@@ -1,6 +1,6 @@
 import SwiftUI
 
-private enum EditorPanel: String, CaseIterable { case layouts = "ģ��", border = "�߿�", export = "����" }
+private enum EditorPanel: String, CaseIterable { case layouts = "模板", border = "边框", export = "导出" }
 
 struct ContentView: View {
     @ObservedObject var model: CollageModel
@@ -51,14 +51,14 @@ struct ContentView: View {
         .alert(item: $model.notice) { notice in
             if notice.offerSettings {
                 return Alert(title: Text(notice.title), message: Text(notice.message),
-                             primaryButton: .default(Text("������")) {
+                             primaryButton: .default(Text("打开设置")) {
                     if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
-                }, secondaryButton: .cancel(Text("�Ժ�")))
+                }, secondaryButton: .cancel(Text("稍后")))
             }
-            return Alert(title: Text(notice.title), message: Text(notice.message), dismissButton: .default(Text("�õ�")))
+            return Alert(title: Text(notice.title), message: Text(notice.message), dismissButton: .default(Text("好的")))
         }
-        .confirmationDialog("��յ�ǰƴͼ������ѡ����Ƭ��", isPresented: $showReset, titleVisibility: .visible) {
-            Button("���¿�ʼ", role: .destructive) { for photo in model.photos { model.remove(photo.id) } }
+        .confirmationDialog("清空当前拼图，重新选择照片？", isPresented: $showReset, titleVisibility: .visible) {
+            Button("重新开始", role: .destructive) { for photo in model.photos { model.remove(photo.id) } }
         }
     }
 
@@ -67,16 +67,16 @@ struct ContentView: View {
             if !model.photos.isEmpty {
                 Button { showReset = true } label: {
                     Image(systemName: "chevron.left").font(.headline).frame(width: 40, height: 44)
-                }.foregroundStyle(Color.pintuInk).accessibilityLabel("���¿�ʼ")
+                }.foregroundStyle(Color.pintuInk).accessibilityLabel("重新开始")
             }
             HStack(alignment: .firstTextBaseline, spacing: 6) {
-                Text("ƴͼ").font(.system(size: 25, weight: .bold, design: .rounded))
+                Text("拼图").font(.system(size: 25, weight: .bold, design: .rounded))
                 Text("PINTU").font(.system(size: 12, weight: .bold, design: .monospaced)).foregroundStyle(Color.pintuPink)
             }
             Spacer()
             if !model.photos.isEmpty {
                 Button { model.export(saveToAlbum: true) } label: {
-                    Label("����", systemImage: "square.and.arrow.down")
+                    Label("保存", systemImage: "square.and.arrow.down")
                         .font(.system(size: 16, weight: .semibold)).padding(.horizontal, 18).padding(.vertical, 11)
                         .background(Color.pintuPink, in: Capsule()).foregroundStyle(.white)
                 }.disabled(model.isWorking)
@@ -102,17 +102,17 @@ struct ContentView: View {
                     .rotationEffect(.degrees(5)).shadow(color: .black.opacity(0.08), radius: 20, y: 10)
                 Image(systemName: "sparkles").font(.system(size: 36)).foregroundStyle(Color.pintuPink).offset(x: 128, y: -126)
             }.padding(.bottom, 32)
-            Text("��ϲ����˲�䣬\n����һ��").font(.system(size: 31, weight: .bold)).multilineTextAlignment(.center).lineSpacing(6)
-            Text("ѡ����Ƭ��ʣ�µĽ������֡�")
+            Text("把喜欢的瞬间，\n放在一起。").font(.system(size: 31, weight: .bold)).multilineTextAlignment(.center).lineSpacing(6)
+            Text("选好照片，剩下的交给布局。")
                 .font(.system(size: 16)).foregroundStyle(.secondary).padding(.top, 14)
             Spacer(minLength: 24)
             Button { showPicker = true } label: {
-                Label("�����ѡ����Ƭ", systemImage: "plus")
+                Label("从相册选择照片", systemImage: "plus")
                     .font(.system(size: 17, weight: .semibold)).frame(maxWidth: .infinity).padding(.vertical, 19)
                     .background(Color.pintuPink, in: RoundedRectangle(cornerRadius: 19)).foregroundStyle(.white)
             }.padding(.horizontal, 28)
-            Button("����ʾ����һ��") { model.loadDemo() }.font(.system(size: 15)).foregroundStyle(Color.pintuInk).padding(18)
-            Label("1�C12 �� �� ���ش��� �� ��ˮӡ", systemImage: "lock.shield")
+            Button("先用示例试一试") { model.loadDemo() }.font(.system(size: 15)).foregroundStyle(Color.pintuInk).padding(18)
+            Label("1–12 张 · 本地处理 · 无水印", systemImage: "lock.shield")
                 .font(.system(size: 12)).foregroundStyle(.secondary).padding(.bottom, 16)
         }
     }
@@ -142,8 +142,8 @@ struct ContentView: View {
                 Spacer(minLength: 0)
                 HStack(spacing: 5) {
                     Image(systemName: "hand.tap")
-                    Text("�����Ƭ�����ü�")
-                    Text("��  \(model.photos.count) ��").foregroundStyle(.white.opacity(0.45))
+                    Text("轻点照片调整裁剪")
+                    Text("·  \(model.photos.count) 张").foregroundStyle(.white.opacity(0.45))
                 }.font(.system(size: 12)).foregroundStyle(.white.opacity(0.7))
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity).padding(.vertical, 10)
@@ -168,17 +168,17 @@ struct ContentView: View {
                             }
                     }
                     .contextMenu {
-                        Button("��ǰ�ƶ�", systemImage: "backward.end") { model.move(photo.id, by: -1) }.disabled(index == 0)
-                        Button("����ƶ�", systemImage: "forward.end") { model.move(photo.id, by: 1) }.disabled(index == model.photos.count - 1)
-                        Button("�Ƴ���Ƭ", systemImage: "trash", role: .destructive) { model.remove(photo.id) }
+                        Button("向前移动", systemImage: "backward.end") { model.move(photo.id, by: -1) }.disabled(index == 0)
+                        Button("向后移动", systemImage: "forward.end") { model.move(photo.id, by: 1) }.disabled(index == model.photos.count - 1)
+                        Button("移除照片", systemImage: "trash", role: .destructive) { model.remove(photo.id) }
                     }
-                    .accessibilityLabel("�� \(index + 1) ����Ƭ��������������Ƴ�")
+                    .accessibilityLabel("第 \(index + 1) 张照片，长按可排序或移除")
                 }
                 if model.photos.count < 12 {
                     Button { showPicker = true } label: {
                         Image(systemName: "plus").font(.title3).frame(width: 54, height: 54)
                             .background(Color.pintuPaper, in: RoundedRectangle(cornerRadius: 10))
-                    }.accessibilityLabel("������Ƭ")
+                    }.accessibilityLabel("添加照片")
                 }
             }.padding(.horizontal, 20).padding(.vertical, 12)
         }
@@ -213,7 +213,7 @@ struct ContentView: View {
 
     private var layoutControls: some View {
         VStack(alignment: .leading, spacing: 18) {
-            Picker("ƴͼ��ʽ", selection: $model.mode) {
+            Picker("拼图方式", selection: $model.mode) {
                 ForEach(CollageMode.allCases) { mode in Text(mode.rawValue).tag(mode) }
             }.pickerStyle(.segmented)
             if model.mode == .templates {
@@ -224,15 +224,15 @@ struct ContentView: View {
                                 Text(ratio.rawValue).font(.system(size: 14, weight: .medium)).padding(.horizontal, 15).padding(.vertical, 9)
                                     .background(model.ratio == ratio ? Color.pintuInk : Color.pintuPaper, in: Capsule())
                                     .foregroundStyle(model.ratio == ratio ? .white : Color.pintuInk)
-                            }.accessibilityLabel("�������� \(ratio.rawValue)")
+                            }.accessibilityLabel("画布比例 \(ratio.rawValue)")
                                 .accessibilityAddTraits(model.ratio == ratio ? [.isSelected] : [])
                         }
                     }
                 }
                 HStack {
-                    Text("�ʺ� \(model.photos.count) �ŵĲ���").font(.system(size: 14, weight: .semibold))
+                    Text("适合 \(model.photos.count) 张的布局").font(.system(size: 14, weight: .semibold))
                     Spacer()
-                    Text("\(model.layouts.count) ��").font(.system(size: 12)).foregroundStyle(.secondary)
+                    Text("\(model.layouts.count) 款").font(.system(size: 12)).foregroundStyle(.secondary)
                 }
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: 4), spacing: 18) {
                     ForEach(model.layouts) { layout in
@@ -243,9 +243,9 @@ struct ContentView: View {
                     }
                 }
             } else {
-                Label("������Ƭԭʼ����ƴ�ӣ������������档", systemImage: "rectangle.on.rectangle")
+                Label("按照照片原始比例拼接，保留完整画面。", systemImage: "rectangle.on.rectangle")
                     .font(.system(size: 14)).foregroundStyle(.secondary)
-                Text("�����Ϸ�����ͼ�ɵ���˳������ͼ���Խ�һ���ü���")
+                Text("长按上方缩略图可调整顺序。轻点大图可以进一步裁剪。")
                     .font(.system(size: 14)).foregroundStyle(.secondary)
             }
         }
@@ -253,9 +253,9 @@ struct ContentView: View {
 
     private var borderControls: some View {
         VStack(alignment: .leading, spacing: 22) {
-            settingSlider("��Ƭ���", value: $model.gap, range: 0...0.035)
-            settingSlider("��ƬԲ��", value: $model.corner, range: 0...0.06)
-            Text("������ɫ").font(.system(size: 15, weight: .medium))
+            settingSlider("照片间距", value: $model.gap, range: 0...0.035)
+            settingSlider("照片圆角", value: $model.corner, range: 0...0.06)
+            Text("背景颜色").font(.system(size: 15, weight: .medium))
             HStack(spacing: 16) {
                 ForEach(CollageModel.colors.indices, id: \.self) { index in
                     Button { model.backgroundIndex = index } label: {
@@ -265,7 +265,7 @@ struct ContentView: View {
                     }.accessibilityLabel(CollageModel.colorNames[index])
                 }
             }
-            Button("�ָ�Ĭ�ϱ߿�") { model.gap = 0.008; model.corner = 0; model.backgroundIndex = 0 }
+            Button("恢复默认边框") { model.gap = 0.008; model.corner = 0; model.backgroundIndex = 0 }
                 .font(.system(size: 14))
         }
     }
@@ -284,23 +284,23 @@ struct ContentView: View {
 
     private var exportControls: some View {
         VStack(alignment: .leading, spacing: 18) {
-            Text("�����ߴ�").font(.system(size: 16, weight: .semibold))
-            Picker("�������", selection: $model.longestEdge) {
+            Text("导出尺寸").font(.system(size: 16, weight: .semibold))
+            Picker("最长边像素", selection: $model.longestEdge) {
                 Text("2048 px").tag(CGFloat(2048))
                 Text("3072 px").tag(CGFloat(3072))
                 Text("4096 px").tag(CGFloat(4096))
             }.pickerStyle(.segmented)
-            Text("\(Int(model.snapshot.size.width)) �� \(Int(model.snapshot.size.height)) ���� �� JPEG �� ��ˮӡ")
+            Text("\(Int(model.snapshot.size.width)) × \(Int(model.snapshot.size.height)) 像素 · JPEG · 无水印")
                 .font(.system(size: 14)).foregroundStyle(.secondary)
             Button { model.export(saveToAlbum: true) } label: {
-                Label("���浽���", systemImage: "square.and.arrow.down").frame(maxWidth: .infinity).padding(15)
+                Label("保存到相册", systemImage: "square.and.arrow.down").frame(maxWidth: .infinity).padding(15)
                     .background(Color.pintuPink, in: RoundedRectangle(cornerRadius: 14)).foregroundStyle(.white)
             }
             Button { model.export(saveToAlbum: false) } label: {
-                Label("���� / �洢���ļ�", systemImage: "square.and.arrow.up").frame(maxWidth: .infinity).padding(15)
+                Label("分享 / 存储到文件", systemImage: "square.and.arrow.up").frame(maxWidth: .infinity).padding(15)
                     .background(Color.pintuPaper, in: RoundedRectangle(cornerRadius: 14)).foregroundStyle(Color.pintuInk)
             }
-            Text("ԭͼ���ᱻ�޸ġ�����ƴ�ӺͲü�������� iPhone ����ɡ�")
+            Text("原图不会被修改。所有拼接和裁剪都在你的 iPhone 上完成。")
                 .font(.system(size: 13)).foregroundStyle(.secondary)
         }
     }
@@ -325,7 +325,7 @@ struct CollageCanvas: View {
                     CropImage(image: image, transform: photo.transform, size: frame.size)
                         .clipShape(RoundedRectangle(cornerRadius: min(size.width, size.height) * corner))
                         .contentShape(Rectangle()).onTapGesture { onTap(index) }
-                        .accessibilityLabel("�༭�� \(index + 1) ����Ƭ").accessibilityAddTraits(.isButton)
+                        .accessibilityLabel("编辑第 \(index + 1) 张照片").accessibilityAddTraits(.isButton)
                         .offset(x: frame.minX, y: frame.minY)
                 }
             }

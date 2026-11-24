@@ -47,9 +47,9 @@ jobs:
           ditto build/Device/Build/Products/Release-iphoneos/Pintu.app build/Package/Payload/Pintu.app
           (cd build/Package && /usr/bin/zip -qry ../Pintu-unsigned.ipa Payload)
           test -s build/Pintu-unsigned.ipa
-          echo '### iPhone ��װ��������' >> "$GITHUB_STEP_SUMMARY"
-          echo '�����·� Pintu-iPhone-unsigned����ѹ��ʹ�� Sideloadly �� AltStore ǩ����װ IPA��' >> "$GITHUB_STEP_SUMMARY"
-          echo 'ע�⣺δǩ�� IPA ����ֱ�ӵ����װ���ⲻ�� TestFlight / App Store ���а���' >> "$GITHUB_STEP_SUMMARY"
+          echo '### iPhone IPA is ready' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Download Pintu-iPhone-unsigned and sign the extracted IPA using Sideloadly or AltStore.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Unsigned IPA requires device signing; this is not a TestFlight or App Store release.' >> "$GITHUB_STEP_SUMMARY"
       - name: Upload iPhone IPA
         uses: actions/upload-artifact@v4
         with:

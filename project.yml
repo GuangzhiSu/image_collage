@@ -25,9 +25,9 @@ targets:
     info:
       path: CollageApp/Info.plist
       properties:
-        CFBundleDisplayName: ƴͼ
+        CFBundleDisplayName: 拼图
         UILaunchScreen: {}
-        NSPhotoLibraryAddUsageDescription: ����������ƴͼ���浽��ᡣ
+        NSPhotoLibraryAddUsageDescription: 将你制作的拼图保存到相册。
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false

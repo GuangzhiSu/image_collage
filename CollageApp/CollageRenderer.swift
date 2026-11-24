@@ -64,8 +64,8 @@ enum CollageRenderer {
         case permissionDenied, encodingFailed
         var errorDescription: String? {
             switch self {
-            case .permissionDenied: return "��Ҫ����������Ƭ�����ܱ��浽��ᡣ��Ҳ����ͨ��������ƴͼ�洢���ļ���"
-            case .encodingFailed: return "ͼƬ����ʧ�ܣ������ԡ�"
+            case .permissionDenied: return "需要允许添加照片，才能保存到相册。你也可以通过分享将拼图存储到文件。"
+            case .encodingFailed: return "图片生成失败，请重试。"
             }
         }
     }

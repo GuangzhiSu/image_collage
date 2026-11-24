@@ -1,38 +1,35 @@
-# ƴͼ �� Pintu for iPhone
+# 拼图 · Pintu for iPhone
 
 [![Build iPhone App](https://github.com/GuangzhiSu/image_collage/actions/workflows/ios.yml/badge.svg)](https://github.com/GuangzhiSu/image_collage/actions/workflows/ios.yml)
 
-һ���ο���ͼ����ƴͼ�������̵�ԭ�� iPhone App��ʹ�� SwiftUI + UIKit ������iOS 17.0 �����ϣ��޵���������ʱ�������޹�桢��ˮӡ��������ͼ��Ϊ����Ŀ�Լ���ʵ�֡�
+参考美图秀秀拼图操作流程的原生 iPhone App，使用 SwiftUI + UIKit，支持 iOS 17.0 及以上。无广告、无水印、无第三方运行时依赖；界面和图标由本项目实现。
 
-## ��ʵ��
+## 功能
 
-- ϵͳ���ѡͼ����ѡ��˳���� 1�C12 ����Ƭ���ɼ������ӡ�֧��ϵͳ�ɽ���� JPEG��PNG��HEIC �Ⱦ�̬��Ƭ��Live Photo ʹ�þ�̬֡��
-- ������Ƭ�������������ģ�壺��ͼ��Сͼ����������/�������С����������ÿ��ģ��ǡ��ʹ��ȫ����Ƭ��
-- ����������3:4��1:1��4:3��9:16��16:9��4:5��2:3��
-- ����ͼ������ƴ�ӣ�����Ƭԭʼ�������С�
-- ���Ԥ���е���Ƭ���϶���˫ָ���š��������š�90�� ��ת���������ã�ȡ�������޸ĵ�ǰ�ü���
-- ��������ͼ��ǰ�ơ����ơ��Ƴ���ʹ�üӺż���ѡͼ��
-- ��ࡢԲ�ǡ����ֱ�����ɫ��
-- ���� JPEG����� 2048 / 3072 / 4096 ���أ�ֱ�ӱ��浽��ᣬ��ϵͳ�������洢���ļ���
-- Ȩ�ޱ��ܾ�ʱ�ṩ������ڣ�iCloud ���ء���ʽ��֧�ֵȵ���������ȷ��ʾ��
-- ����ʾ�������ڲ���ȡ������������á�
+- 从系统相册按顺序选择 1–12 张照片，可继续添加。
+- 根据数量提供模板：主图与小图、均匀网格、上下或左右排列、错落分区。
+- 比例：3:4、1:1、4:3、9:16、16:9、4:5、2:3。
+- 竖向长图、横向拼接，按照片原始比例排列。
+- 点击照片后拖动、双指缩放、滑块缩放、旋转、镜像或重置裁剪；取消不修改原裁剪。
+- 长按缩略图可向前、向后移动或移除照片。
+- 调整间距、圆角和六种背景色。
+- 高清 JPEG，最长边 2048 / 3072 / 4096 像素，保存到相册或通过系统分享存储到文件。
+- 内置示例；包含 iCloud 下载失败、格式不支持、相册权限被拒绝等错误提示。
 
-��Ƭֻ���豸�ϴ�����û�з��������˺Ż��ϴ���ϵͳѡͼ��ֻ�ṩ��ѡ�е���Ƭ������ʱ������������Ƭ����Ȩ�ޡ������ļ������Ӧ�õ���ʱĿ¼�����汾���ṩ�������Ĳݸ�ָ����˳�ǰ�뱣��ƴͼ��
+所有照片在设备上处理，不会上传。选图器只提供你选中的照片，保存时才请求添加照片权限。支持系统可解码的 JPEG、PNG、HEIC 等静态图；Live Photo 使用静态帧。临时文件不作为持久草稿，请在退出前保存拼图。
 
-## Windows �û������� iPhone ��װ��
+## Windows 下载并安装
 
-1. �� [Actions �� Build iPhone App](https://github.com/GuangzhiSu/image_collage/actions/workflows/ios.yml)��
-2. ѡ������һ����ɫ�ɹ���¼�����û�м�¼���ɵ�� **Run workflow**��
-3. ���������ҳ��ײ��� **Artifacts** ������ **Pintu-iPhone-unsigned**����ѹ�õ� `Pintu-unsigned.ipa`������ Artifact ��Ҫ��¼ GitHub��
-4. �� Windows ʹ�� Sideloadly ���������úõ� AltStore / SideStore Ϊ IPA ǩ�����ٰ�װ�� iPhone��
+1. 打开 [Actions → Build iPhone App](https://github.com/GuangzhiSu/image_collage/actions/workflows/ios.yml)。
+2. 进入最新一次绿色成功的记录；也可使用 **Run workflow** 手动构建。
+3. 在底部 **Artifacts** 下载 **Pintu-iPhone-unsigned**，解压得到 **Pintu-unsigned.ipa**。下载时需要登录 GitHub。
+4. 使用 Windows 上的 Sideloadly，或已配置好的 AltStore / SideStore 为 IPA 签名，再安装到 iPhone。
 
-**����δǩ�� IPA������ֱ�����ֻ��ϵ����װ��** GitHub Actions ����Ҫ��� Apple ID��������֤������룻�豸ǩ�������ڱ����Ĳ��ع�������ɡ���ѵĸ���ǩ��ͨ����Ҫ������ǩ��TestFlight / App Store ������Ҫ�������� Apple Developer ֤��ͷ������̣�����Ŀ���Զ��������̵ꡣ
+**未签名 IPA 不能直接点击安装。** Actions 不需要你的 Apple ID、密码或证书。个人签名的续签由你使用的侧载工具管理；TestFlight / App Store 发行需要单独配置开发者证书，本项目不自动发布到商店。
 
-��Ҫ�ֹ��²��ƴ�� Artifact ���� URL����� Actions ����ҳ����룬����ʧЧ���Ӻ� 404��
+请从 Actions 运行页面进入下载，不要手动拼接 Artifact URL。IPA 保留 30 天，过期后重新运行构建即可。每次 main 分支的代码推送都会自动构建。**Pintu-preview-and-tests** 包含测试日志、结果及成功生成时的模拟器截图；截图是可选步骤，不阻塞 IPA。
 
-ÿ�����ʹ��뵽 `main` �����Զ����в��Բ����� IPA����һ������ **Pintu-preview-and-tests** ����ģ����Ԥ��ͼ��������־�Ͳ��Խ����IPA ���� 30 �죬���ں��������й������ɡ�
-
-## macOS / Xcode ����
+## macOS / Xcode 开发
 
 ```sh
 brew install xcodegen
@@ -41,20 +38,20 @@ xcodegen generate
 open Pintu.xcodeproj
 ```
 
-�� Xcode �� Signing & Capabilities ��ѡ����� Team �󣬿���ֱ�����е� iPhone��ģ��������ǩ���������� `project.yml` ΪԴ��Xcode ���̡�Info.plist �� AppIcon �������ɲ����д���������Ҫ��װ Swift Package �� CocoaPods ������
+在 Xcode 的 Signing & Capabilities 选择你的 Team 后运行到真机。模拟器无需签名。工程以 project.yml 为源，Xcode 工程、Info.plist 和图标在生成步骤中创建。
 
-## �ṹ����֤
+## 结构和测试
 
-| �ļ� | ���� |
+| 文件 | 功能 |
 | --- | --- |
-| `CollageGeometry.swift` | 1�C12 �Ų��֡������ߴ硢��ͼ�Ͳü����� |
-| `PhotoStore.swift` | ϵͳѡͼ��ԭ�ļ���ʱ�洢��EXIF ����������ͼ |
-| `CollageModel.swift` | �༭״̬��˳�򡢵��롢�������� |
-| `ContentView.swift` / `CropEditor.swift` | �༭����͵�ͼ�ü� |
-| `CollageRenderer.swift` | Ԥ��ͬԴ�ĸ�����ơ����д�� |
-| `CollageAppTests/CollageTests.swift` | ģ�����������ص����޿հײü������˱������������ز��� |
-| `.github/workflows/ios.yml` | ģ�������ԡ���ͼ����ǩ����������� IPA ��� |
+| CollageGeometry.swift | 模板、长图比例、裁剪坐标和画布尺寸 |
+| PhotoStore.swift | 系统选图、临时文件、EXIF 方向、缩略图 |
+| CollageModel.swift | 导入、编辑状态、排序和导出 |
+| ContentView.swift / CropEditor.swift | 主界面、单图裁剪 |
+| CollageRenderer.swift | 高清绘制、相册保存 |
+| CollageAppTests/CollageTests.swift | 布局铺满与无重叠、裁剪无空白、极端比例、导出像素测试 |
+| .github/workflows/ios.yml | 模拟器测试、真机编译、IPA 打包及可选截图 |
 
-����ʱ���Ŷ�ȡ�ϴ�ͼ�񣬲�ͬʱ���� 12 ��ȫ�ֱ���ԭͼ����� 4096 ָ����ͼƬ�ĳߴ磬����֤�ͷֱ���ԭͼ���Ŵ������ϸ�ڡ���ͼ��Ƭ�ܶ�ʱ����������ƣ�����ͼ����Ч�ֱ��ʻή�͡�
+原始大图逐张读取，避免同时解码十二张全分辨率照片。4096 是生成图片的最长边；放大低分辨率原图不会增加细节，多张长图的单张有效分辨率也会受最长边限制。
 
-������գ��״�ѡͼ��iCloud ԭͼ���ء�HEIC/��ת��Ƭ��1/3/12 ��ģ�塢�ü�ȡ����ȷ�ϡ�������ɾ��������ࡢ��ᱣ������/�ܾ��������롰�洢���ļ������Զ����Բ��������Ȩ�޺Ͳ�����֤��
+真机验收：首次选图、iCloud 照片、HEIC 和旋转照片、1/3/12 张布局、裁剪确认/取消、排序与删除、最大间距、允许/拒绝保存权限、系统分享和存储到文件。自动测试不代替真机权限、触摸交互和侧载验证。
